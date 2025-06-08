@@ -41,7 +41,7 @@ class ArrowOnTopState extends State<ArrowOnTop> {
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    gradient: isHover ? buttonGradi : pinkpurple,
+                    gradient: isHover ? buttonGradi : modernPurple,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(8.0),
                       bottomLeft: Radius.circular(8.0),

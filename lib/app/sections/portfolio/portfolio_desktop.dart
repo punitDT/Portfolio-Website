@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mysite/app/utils/project_utils.dart';
+import 'package:provider/provider.dart';
 import 'package:mysite/app/widgets/custom_text_heading.dart';
-import 'package:mysite/changes/strings.dart';
 import 'package:mysite/core/configs/configs.dart';
+import 'package:mysite/core/providers/public_data_provider.dart';
+import 'package:mysite/core/color/colors.dart';
 import 'package:sizer/sizer.dart';
 
-import 'widgets/project_card.dart';
+import 'widgets/modern_project_card.dart';
 
 class PortfolioDesktop extends StatefulWidget {
   const PortfolioDesktop({Key? key}) : super(key: key);
@@ -16,56 +17,171 @@ class PortfolioDesktop extends StatefulWidget {
 
 class _PortfolioDesktopState extends State<PortfolioDesktop> {
   int listLength = 3;
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final dataProvider = Provider.of<PublicDataProvider>(context);
+
+    // All data comes from Firebase only
+    final projects = dataProvider.projects;
+    final displayProjects = projects.take(listLength).toList();
+
+    // Show loading state
+    if (dataProvider.isLoading) {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: size.width / 8),
+        height: 400,
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    // Show error state
+    if (dataProvider.error != null) {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: size.width / 8),
+        height: 400,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48, color: Colors.red),
+              const SizedBox(height: 16),
+              const Text(
+                'Failed to load projects',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                dataProvider.error!,
+                style: const TextStyle(color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Show empty state
+    if (projects.isEmpty) {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: size.width / 8),
+        height: 400,
+        child: const Center(
+          child: Text(
+            'No projects available',
+            style: TextStyle(fontSize: 18),
+          ),
+        ),
+      );
+    }
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: size.width / 8),
+      padding: EdgeInsets.symmetric(horizontal: size.width / 12, vertical: 4.w),
       child: Column(
         children: [
-          const CustomSectionHeading(text: "\nProjects"),
-          Space.y(1.w)!,
-          CustomSectionSubHeading(text: protfolioSubHeading),
-          Space.y(2.w)!,
-          ListView.separated(
-            itemCount: listLength,
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            itemBuilder: (context, index) =>
-                ProjectCard(project: projectUtils[index]),
-            separatorBuilder: (context, index) => const SizedBox(height: 80),
-          ),
-          /*Wrap(
-            alignment: WrapAlignment.start,
-            crossAxisAlignment: WrapCrossAlignment.start,
-            runSpacing: 3.w,
-            children: projectUtils
-                .asMap()
-                .entries
-                .map(
-                  (e) => ProjectCard(project: e.value),
-                )
-                .toList(),
-          ),*/
-          Space.y(3.w)!,
-          listLength == projectUtils.length
-              ? const SizedBox.shrink()
-              : OutlinedButton(
-                  //onPressed: () => openURL(gitHub),
-                  onPressed: () =>
-                      setState(() => listLength = projectUtils.length),
-                  child: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'See More',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+          // Header Section
+          Container(
+            margin: EdgeInsets.only(bottom: 4.w),
+            child: Column(
+              children: [
+                const CustomSectionHeading(text: "Featured Projects"),
+                Space.y(1.w)!,
+                Container(
+                  constraints: BoxConstraints(maxWidth: size.width * 0.6),
+                  child: CustomSectionSubHeading(
+                    text: dataProvider.getContent('portfolio_sub_heading',
+                      defaultValue: "Since the beginning of my journey as a developer, I have created digital products for business and consumer use. This is a little bit."),
                   ),
-                )
+                ),
+              ],
+            ),
+          ),
+
+          // Projects Grid
+          if (dataProvider.isLoading)
+            SizedBox(
+              height: 400,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          else
+            _buildProjectsGrid(displayProjects, size),
+
+          Space.y(4.w)!,
+
+          // Show "See More" button if there are more projects
+          if (listLength < projects.length)
+            _buildSeeMoreButton(projects),
         ],
+      ),
+    );
+  }
+
+  Widget _buildProjectsGrid(List projects, Size size) {
+    // Calculate responsive grid layout
+    int crossAxisCount = 2;
+    if (size.width > 1400) {
+      crossAxisCount = 3;
+    } else if (size.width > 1000) {
+      crossAxisCount = 2;
+    }
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        crossAxisSpacing: 3.w,
+        mainAxisSpacing: 3.w,
+        childAspectRatio: 1.2, // Adjust for better proportions
+      ),
+      itemCount: projects.length,
+      itemBuilder: (context, index) {
+        final project = projects[index];
+        return ModernProjectCard(project: project);
+      },
+    );
+  }
+
+  Widget _buildSeeMoreButton(List projects) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: buttonGradi,
+        borderRadius: BorderRadius.circular(25),
+        boxShadow: [
+          BoxShadow(
+            color: primaryColor.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: ElevatedButton.icon(
+        onPressed: () {
+          setState(() => listLength = projects.length);
+        },
+        icon: const Icon(Icons.arrow_forward_rounded, color: whiteColor),
+        label: const Text(
+          'View All Projects',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: whiteColor,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+        ),
       ),
     );
   }

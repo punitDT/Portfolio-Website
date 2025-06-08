@@ -43,7 +43,10 @@ class _MobileDrawer extends StatelessWidget {
                         (e) => Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: MaterialButton(
-                            hoverColor: theme.primaryColor.withAlpha(70),
+                            hoverColor: primaryColor.withOpacity(0.1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             onPressed: () {
                               // scrollProvider.scrollMobile(e.key);
                               scrollProvider.jumpTo(e.key);
@@ -63,10 +66,88 @@ class _MobileDrawer extends StatelessWidget {
                         ),
                       ),
                   Space.y(5.w)!,
-                  ColorChageButton(
-                    text: 'RESUME',
-                    onTap: () {
-                      openURL(resume);
+                  Consumer<AuthProvider>(
+                    builder: (context, authProvider, child) {
+                      if (authProvider.isLoggedIn) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: MaterialButton(
+                            hoverColor: theme.primaryColor.withAlpha(70),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).pushNamed('/admin');
+                            },
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.admin_panel_settings,
+                                color: theme.primaryColor,
+                              ),
+                              title: Text(
+                                'ADMIN PANEL',
+                                style: TextStyle(
+                                  color: theme.primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: MaterialButton(
+                            hoverColor: theme.primaryColor.withAlpha(70),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).pushNamed('/admin/login');
+                            },
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.admin_panel_settings_outlined,
+                                color: theme.textColor.withOpacity(0.7),
+                              ),
+                              title: Text(
+                                'ADMIN LOGIN',
+                                style: TextStyle(
+                                  color: theme.textColor.withOpacity(0.7),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  Space.y(2.w)!,
+                  Consumer<PublicDataProvider>(
+                    builder: (context, dataProvider, child) {
+                      return ColorChageButton(
+                        text: 'RESUME',
+                        onTap: () {
+                          final resumeUrl = dataProvider.getContent('resume_url',
+                              defaultValue: 'https://drive.google.com/file/d/11SKV1YlDUEJJq5B7JYAFjSi8k2nmp-HC/view?usp=sharing');
+                          openURL(resumeUrl);
+                        },
+                      );
+                    },
+                  ),
+                  Space.y(2.w)!,
+                  Consumer<PublicDataProvider>(
+                    builder: (context, dataProvider, child) {
+                      return ListTile(
+                        leading: const Icon(Icons.refresh),
+                        title: const Text('Refresh Portfolio'),
+                        onTap: () async {
+                          Navigator.of(context).pop(); // Close drawer
+                          await dataProvider.forceRefreshData();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Portfolio data refreshed!'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                      );
                     },
                   ),
                 ],

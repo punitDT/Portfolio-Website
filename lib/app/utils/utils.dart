@@ -12,6 +12,6 @@ class BodyUtils {
     Services(),
     Portfolio(),
     Contact(),
-    //Footer(),
+    Footer(),
   ];
 }

@@ -1,68 +1,93 @@
 import 'package:flutter/material.dart';
 
-const primaryColor = Color(0xFF09FBD3);
-const secondaryColor = Color(0xFFFE53BB);
+// Modern color scheme with purple/blue theme
+const primaryColor = Color(0xFF6366F1); // Modern indigo
+const secondaryColor = Color(0xFFEC4899); // Modern pink
+const accentColor = Color(0xFF8B5CF6); // Purple accent
 
-const textColor = Color(0xFF2B2B2B);
+const textColor = Color(0xFF1F2937);
 const lightgrayColor = Color(0x44948282);
 const whiteColor = Color(0xFFFFFFFF);
-const blackColor = Color(0xFF2B2B2B);
-// Color kCyanColor = const Color(0xFF08F7FE);
-// const btnColor = Color(0xFF4E5E80);
-// const defaultPadding = 200.0;
-// const defaultDuration = Duration(seconds: 1); // we use it on our animation
-// const maxWidth = 1440.0; // max width of our web
+const blackColor = Color(0xFF111827);
 
-Color lightBackgroundColor = const Color(0xFFFFFFFF);
-// Color lightPrimaryColor = const Color(0xffFFDDBF);
-Color lightTextColor = const Color(0xFF403930);
-// Color lightDividerColor = const Color(0x44948282);
-// Color lightOutLineBtnColor = const Color(0xFF4D5566);
+// Light theme colors
+Color lightBackgroundColor = const Color(0xFFFAFAFA);
+Color lightTextColor = const Color(0xFF374151);
+Color lightCardColor = const Color(0xFFFFFFFF);
 
-//
-Color darkBackgroundColor = const Color(0xFF2B2B2B);
-// Color darkPrimaryColor = const Color(0xFFFFDDBF);
-Color darkTextColor = const Color(0xFFF3F2FF);
-// Color darkDividerColor = const Color(0x441C2A3D);
-// Color darkOutLineBtnColor = const Color(0xFFF3F2FF);
+// Dark theme colors
+Color darkBackgroundColor = const Color(0xFF0F172A);
+Color darkTextColor = const Color(0xFFF1F5F9);
+Color darkCardColor = const Color(0xFF1E293B);
 
-const pinkpurple = LinearGradient(
-  begin: Alignment.centerLeft,
-  end: Alignment.centerRight,
-  colors: [Color(0XFFaa367c), Color(0XFF4a2fbd)],
+// Modern gradient combinations
+const modernPurple = LinearGradient(
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+  colors: [Color(0xFF8B5CF6), Color(0xFF6366F1)],
+);
+
+const modernBlue = LinearGradient(
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+  colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+);
+
+const modernPink = LinearGradient(
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+  colors: [Color(0xFFEC4899), Color(0xFFBE185D)],
 );
 
 const grayBack = LinearGradient(
   begin: Alignment.topLeft,
   end: Alignment.bottomRight,
-  colors: [Color(0XFF2E2D36), Color(0XFF11101D)],
+  colors: [Color(0xFF334155), Color(0xFF1E293B)],
 );
+
 const grayWhite = LinearGradient(
   begin: Alignment.topLeft,
   end: Alignment.bottomRight,
-  colors: [Color(0xFFFFFFFF), Color(0xFFF3F2FF)],
+  colors: [Color(0xFFFFFFFF), Color(0xFFF8FAFC)],
 );
 
 const buttonGradi = LinearGradient(
-  begin: Alignment.topCenter,
-  end: Alignment.bottomCenter,
-  colors: [Color(0XFF7DE7EB), Color(0XFF33BBCF)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+  colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
 );
 
 const contactGradi = LinearGradient(
-  begin: Alignment.topCenter,
-  end: Alignment.bottomCenter,
-  colors: [Color(0XFF2E2D36), Color(0XFF11101D)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+  colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
 );
 
-//
+// Modern shadow effects
 BoxShadow primaryColorShadow = BoxShadow(
-  color: primaryColor.withAlpha(100),
-  blurRadius: 12.0,
-  offset: const Offset(0.0, 0.0),
+  color: primaryColor.withOpacity(0.3),
+  blurRadius: 20.0,
+  offset: const Offset(0.0, 8.0),
+  spreadRadius: 0,
 );
+
+BoxShadow modernCardShadow = BoxShadow(
+  color: Colors.black.withOpacity(0.1),
+  blurRadius: 24.0,
+  offset: const Offset(0.0, 4.0),
+  spreadRadius: 0,
+);
+
 BoxShadow blackColorShadow = BoxShadow(
-  color: Colors.black.withAlpha(100),
-  blurRadius: 12.0,
+  color: Colors.black.withOpacity(0.15),
+  blurRadius: 16.0,
+  offset: const Offset(0.0, 4.0),
+  spreadRadius: 0,
+);
+
+BoxShadow glowShadow = BoxShadow(
+  color: primaryColor.withOpacity(0.4),
+  blurRadius: 32.0,
   offset: const Offset(0.0, 0.0),
+  spreadRadius: 0,
 );

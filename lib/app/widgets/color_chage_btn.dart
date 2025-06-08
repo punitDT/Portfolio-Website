@@ -43,42 +43,44 @@ class _MobileCCButtonState extends State<MobileCCButton> {
       children: [
         if (!isHover)
           Container(
-            height: 35,
-            width: 125,
+            height: 40,
+            width: 140,
             decoration: BoxDecoration(
-              border: Border.all(color: theme.textColor, width: 1.5),
-              borderRadius: BorderRadius.circular(3),
+              border: Border.all(color: primaryColor, width: 2),
+              borderRadius: BorderRadius.circular(12),
             ),
           ),
         AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          height: 35,
+          duration: const Duration(milliseconds: 300),
+          height: 40,
           width: _animatedWidth,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(3),
-            gradient: pinkpurple,
+            borderRadius: BorderRadius.circular(12),
+            gradient: buttonGradi,
+            boxShadow: isHover ? [glowShadow] : [],
           ),
         ),
         InkWell(
           onHover: (value) {
             setState(() {
               isHover = !isHover;
-              _animatedWidth = value ? 125 : 0.0;
+              _animatedWidth = value ? 140 : 0.0;
             });
           },
           onTap: () {
-            setState(() => _animatedWidth = 125);
+            setState(() => _animatedWidth = 140);
             widget.onTap();
           },
           child: SizedBox(
-            height: 35,
-            width: 125,
+            height: 40,
+            width: 140,
             child: Center(
               child: Text(
                 widget.text.toUpperCase(),
                 style: TextStyle(
-                  color: theme.textColor,
-                  fontSize: 13,
+                  color: isHover ? whiteColor : primaryColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
@@ -119,17 +121,18 @@ class _TabCCButtonState extends State<TabCCButton> {
             height: 50,
             width: 200,
             decoration: BoxDecoration(
-              border: Border.all(color: theme.textColor, width: 2),
-              borderRadius: BorderRadius.circular(5),
+              border: Border.all(color: primaryColor, width: 2),
+              borderRadius: BorderRadius.circular(12),
             ),
           ),
         AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 300),
           height: 50,
           width: _animatedWidth,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            gradient: pinkpurple,
+            borderRadius: BorderRadius.circular(12),
+            gradient: buttonGradi,
+            boxShadow: isHover ? [glowShadow] : [],
           ),
         ),
         InkWell(
@@ -150,8 +153,9 @@ class _TabCCButtonState extends State<TabCCButton> {
                 child: Text(
                   widget.text.toUpperCase(),
                   style: TextStyle(
-                    color: theme.textColor,
+                    color: isHover ? whiteColor : primaryColor,
                     fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -186,42 +190,44 @@ class _DesktopCCButtonState extends State<DesktopCCButton> {
       children: [
         if (!isHover)
           Container(
-            height: 65,
-            width: 250,
+            height: 60,
+            width: 240,
             decoration: BoxDecoration(
-              border: Border.all(color: theme.textColor, width: 3),
-              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: primaryColor, width: 2),
+              borderRadius: BorderRadius.circular(16),
             ),
           ),
         AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          height: 65,
+          duration: const Duration(milliseconds: 300),
+          height: 60,
           width: _animatedWidth,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6),
-            gradient: pinkpurple,
+            borderRadius: BorderRadius.circular(16),
+            gradient: buttonGradi,
+            boxShadow: isHover ? [glowShadow] : [],
           ),
         ),
         InkWell(
           onHover: (value) {
             setState(() {
               isHover = !isHover;
-              _animatedWidth = value ? 250 : 0.0;
+              _animatedWidth = value ? 240 : 0.0;
             });
           },
           onTap: () {
-            setState(() => _animatedWidth = 250);
+            setState(() => _animatedWidth = 240);
             widget.onTap();
           },
           child: SizedBox(
-            height: 65,
-            width: 250,
+            height: 60,
+            width: 240,
             child: Center(
               child: Text(
                 widget.text.toUpperCase(),
                 style: TextStyle(
-                  color: isHover ? whiteColor : theme.textColor,
+                  color: isHover ? whiteColor : primaryColor,
                   fontSize: 18,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),

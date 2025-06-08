@@ -1,13 +1,12 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:mysite/app/widgets/color_chage_btn.dart';
-import 'package:mysite/changes/img.dart';
-import 'package:mysite/changes/links.dart';
-import 'package:mysite/changes/strings.dart';
 import 'package:mysite/core/animations/entrance_fader.dart';
 import 'package:mysite/core/animations/zoom_animation.dart';
 import 'package:mysite/core/configs/configs.dart';
 import 'package:mysite/core/res/responsive_size.dart';
+import 'package:mysite/core/providers/public_data_provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:universal_html/html.dart' as html;
 
@@ -18,30 +17,31 @@ class HomeMobile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: 10.w, top: 10.h, right: 10.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
+    return Consumer<PublicDataProvider>(
+      builder: (context, dataProvider, child) {
+        return Padding(
+          padding: EdgeInsets.only(left: 10.w, top: 10.h, right: 10.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                hellotag,
-                style: AppText.h3!.copyWith(fontSize: isFontSize(context, 16)),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    dataProvider.getContent('hello_tag', defaultValue: 'Hi there, Welcome to My Space'),
+                    style: AppText.h3!.copyWith(fontSize: isFontSize(context, 16)),
+                  ),
+
+                ],
               ),
-              // Space.x!,
-              Image.asset(StaticImage.hi, height: 10.sp),
-            ],
-          ),
-          // Space.y(1.w)!,
-          Text(
-            yourname,
-            style: TextStyle(
-              fontSize: isFontSize(context, 28),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+              // Space.y(1.w)!,
+              Text(
+                dataProvider.getContent('your_name', defaultValue: "I'm Punit Patel,"),
+                style: TextStyle(
+                  fontSize: isFontSize(context, 28),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
           Space.y(1.w)!,
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -54,7 +54,7 @@ class HomeMobile extends StatelessWidget {
                 ),
               ),
               AnimatedTextKit(
-                animatedTexts: mobileList,
+                animatedTexts: getMobileList(context),
                 repeatForever: true,
                 isRepeatingAnimation: true,
               ),
@@ -68,7 +68,8 @@ class HomeMobile extends StatelessWidget {
               ColorChageButton(
                 text: 'download cv',
                 onTap: () {
-                  html.window.open(resume, "pdf");
+                  final resumeUrl = dataProvider.getContent('resume_url', defaultValue: 'https://drive.google.com/file/d/11SKV1YlDUEJJq5B7JYAFjSi8k2nmp-HC/view?usp=sharing');
+                  html.window.open(resumeUrl, "pdf");
                 },
               ),
               const EntranceFader(
@@ -81,6 +82,8 @@ class HomeMobile extends StatelessWidget {
           ),
         ],
       ),
+    );
+      },
     );
   }
 }

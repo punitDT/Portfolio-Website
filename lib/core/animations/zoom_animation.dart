@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mysite/app/widgets/custom_outline.dart';
 import 'package:mysite/core/theme/app_theme.dart';
+import 'package:mysite/core/providers/public_data_provider.dart';
 
 class ZoomAnimations extends StatefulWidget {
   const ZoomAnimations({Key? key}) : super(key: key);
@@ -85,16 +88,34 @@ class _ZoomAnimationsState extends State<ZoomAnimations>
                 0.6,
                 1
               ]),
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.black.withOpacity(0.8),
-              image: const DecorationImage(
-                fit: BoxFit.cover,
-                alignment: Alignment.bottomLeft,
-                image: AssetImage('assets/imgs/IMG_0107.png'),
-              ),
-            ),
+          child: Consumer<PublicDataProvider>(
+            builder: (context, dataProvider, child) {
+              final profileImageUrl = dataProvider.getContent('profile_image_url',
+                  defaultValue: 'https://images.unsplash.com/photo-1503443207922-dff7d543fd0e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=627&q=80');
+
+              return Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.black.withOpacity(0.8),
+                ),
+                child: ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: profileImageUrl,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: Colors.grey[300],
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: Colors.grey[300],
+                      child: const Icon(Icons.person, size: 50),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),

@@ -25,14 +25,22 @@ dependencies:
   sizer: ^2.0.15
   connectivity_plus: ^2.3.7
   url_launcher: ^6.1.2
-  carousel_slider: ^4.0.0
+  carousel_slider: ^5.0.0
   animated_text_kit: ^4.2.1
   scrollable_positioned_list: ^0.3.5
+  cached_network_image: ^3.3.1
+  flutter_cache_manager: ^3.3.1
 
   # web related
   # flutter_html: any
   # url_strategy: ^0.2.0
   universal_html: ^2.0.4
+  firebase_core: ^3.13.1
+  firebase_auth: ^5.5.4
+  cloud_firestore: ^5.6.8
+  firebase_storage: ^12.4.6
+  image_picker: ^1.1.2
+  file_picker: ^10.1.9
 
 dev_dependencies:
   flutter_test:
@@ -42,11 +50,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
-  assets:
-    - assets/imgs/
-    - assets/icons/
-    - assets/gif/
+  # Assets removed - all images now loaded from Firebase Storage
+  # assets:
 
   fonts:
     - family: Montserrat

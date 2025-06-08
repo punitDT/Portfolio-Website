@@ -32,7 +32,7 @@ class _NavBarActionButtonState extends State<NavBarActionButton> {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(
-          gradient: isHover ? pinkpurple : null,
+          gradient: isHover ? modernPurple : null,
           borderRadius: BorderRadius.circular(5.0),
         ),
         child: InkWell(

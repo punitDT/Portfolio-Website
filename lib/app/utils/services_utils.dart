@@ -11,26 +11,5 @@ class ServicesUtils {
       required this.tool});
 }
 
-List<ServicesUtils> servicesUtils = [
-  ServicesUtils(
-    name: 'Android App Development',
-    icon: 'assets/icons/android.svg',
-    description:
-        "Are you interested in the great Mobile app? Let's make it a reality.",
-    tool: ['Flutter', 'Android (Java)'],
-  ),
-  ServicesUtils(
-    name: 'iOS App Development',
-    icon: 'assets/icons/apple.svg',
-    description:
-        "Are you interested in the great Mobile app? Let's make it a reality.",
-    tool: ['Flutter', ''],
-  ),
-  ServicesUtils(
-    name: 'Web Development',
-    icon: 'assets/icons/website.svg',
-    description:
-        "Do you have an idea for your next great website? Let's make it a reality.",
-    tool: ['Flutter Web', 'Html,css,js'],
-  ),
-];
+// Static services data removed - all data now comes from Firebase
+List<ServicesUtils> servicesUtils = [];

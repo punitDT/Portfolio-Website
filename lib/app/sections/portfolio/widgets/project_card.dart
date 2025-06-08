@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mysite/app/utils/project_utils.dart';
 import 'package:mysite/core/color/colors.dart';
@@ -39,9 +40,13 @@ class ProjectCardState extends State<ProjectCard> {
         width: Responsive.isDesktop(context) ? 60.w : 70.w,
         height: 56.h,
         decoration: BoxDecoration(
-          gradient: isHover ? pinkpurple : grayBack,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: isHover ? [primaryColorShadow] : [blackColorShadow],
+          gradient: isHover ? modernPurple : grayBack,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: isHover ? [glowShadow] : [modernCardShadow],
+          border: Border.all(
+            color: isHover ? primaryColor.withOpacity(0.3) : Colors.transparent,
+            width: 1,
+          ),
         ),
         child: Stack(
           fit: StackFit.expand,
@@ -55,6 +60,12 @@ class ProjectCardState extends State<ProjectCard> {
                     widget.project.icons,
                     height: height * 0.05,
                   ),
+                  // CachedNetworkImage(
+                  //   imageUrl: widget.project.imageUrl,
+                  //   height: height * 0.05,
+                  //   errorWidget: (context, url, error) =>
+                  //       const Icon(Icons.error_outline),
+                  // ),
                   SizedBox(height: height * 0.02),
                   Text(
                     widget.project.titles,
@@ -82,16 +93,16 @@ class ProjectCardState extends State<ProjectCard> {
               child: Container(
                 width: Responsive.isDesktop(context) ? 30.w : 70.w,
                 height: 36.h,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                      image: AssetImage(widget.project.banners),
-                      fit: BoxFit.fill),
-                ),
-                // child: Image.asset(
-                //   widget.project.banners,
-                //   fit: BoxFit.cover,
+                // decoration: BoxDecoration(
+                //   borderRadius: BorderRadius.circular(10),
+                //   image: DecorationImage(
+                //       image: NetworkImage(widget.project.imageUrl),
+                //       fit: BoxFit.fill),
                 // ),
+                child: Image.asset(
+                  widget.project.banners,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ],

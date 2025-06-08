@@ -1,13 +1,12 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:mysite/app/sections/home/widgets/animation_text.dart';
 import 'package:mysite/app/widgets/color_chage_btn.dart';
-import 'package:mysite/changes/img.dart';
-import 'package:mysite/changes/links.dart';
-import 'package:mysite/changes/strings.dart';
 import 'package:mysite/core/animations/entrance_fader.dart';
 import 'package:mysite/core/animations/zoom_animation.dart';
 import 'package:mysite/core/configs/configs.dart';
+import 'package:mysite/core/providers/public_data_provider.dart';
 import 'package:mysite/core/res/responsive_size.dart';
 import 'package:sizer/sizer.dart';
 import 'package:universal_html/html.dart' as html;
@@ -18,6 +17,7 @@ class HomeTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
+    final dataProvider = Provider.of<PublicDataProvider>(context);
     return SizedBox(
       height: 60.h,
       child: Stack(
@@ -41,21 +41,16 @@ class HomeTab extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      hellotag,
+                      dataProvider.getContent('hello_tag', defaultValue: 'Hi there, Welcome to My Space'),
                       style: AppText.h3!
                           .copyWith(fontSize: isFontSize(context, 18)),
                     ),
-                    EntranceFader(
-                      offset: const Offset(0, 0),
-                      delay: const Duration(seconds: 2),
-                      duration: const Duration(milliseconds: 800),
-                      child: Image.asset(StaticImage.hi, height: 10.sp),
-                    ),
+
                   ],
                 ),
                 Space.y(1.w)!,
                 Text(
-                  yourname,
+                  dataProvider.getContent('your_name', defaultValue: "I'm Punit Patel,"),
                   style: TextStyle(
                     fontSize: isFontSize(context, 38),
                     fontWeight: FontWeight.w600,
@@ -76,7 +71,7 @@ class HomeTab extends StatelessWidget {
                         ),
                       ),
                       AnimatedTextKit(
-                        animatedTexts: tabList,
+                        animatedTexts: getTabList(context),
                         isRepeatingAnimation: true,
                       ),
                     ],
@@ -86,7 +81,7 @@ class HomeTab extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(right: 50.w),
                   child: Text(
-                    miniDescription,
+                    dataProvider.getContent('mini_description', defaultValue: "Freelancer providing services for programming and design content needs. Join me down below and let's get started!"),
                     style: TextStyle(
                         fontSize: isFontSize(context, 16),
                         fontWeight: FontWeight.w100,
@@ -97,7 +92,8 @@ class HomeTab extends StatelessWidget {
                 ColorChageButton(
                   text: 'download cv',
                   onTap: () {
-                    html.window.open(resume, "pdf");
+                    final resumeUrl = dataProvider.getContent('resume_url', defaultValue: 'https://drive.google.com/file/d/11SKV1YlDUEJJq5B7JYAFjSi8k2nmp-HC/view?usp=sharing');
+                    html.window.open(resumeUrl, "pdf");
                   },
                 ),
               ],
