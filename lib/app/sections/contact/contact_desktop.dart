@@ -11,6 +11,19 @@ import 'package:sizer/sizer.dart';
 class ContactDesktop extends StatelessWidget {
   const ContactDesktop({Key? key}) : super(key: key);
 
+  // Helper method for responsive padding
+  double _getResponsivePadding(double screenWidth) {
+    if (screenWidth > 1400) {
+      return screenWidth * 0.08; // 8% for very large screens
+    } else if (screenWidth > 1200) {
+      return screenWidth * 0.06; // 6% for large screens
+    } else if (screenWidth > 1000) {
+      return screenWidth * 0.05; // 5% for medium screens
+    } else {
+      return screenWidth * 0.04; // 4% for smaller screens
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -19,7 +32,7 @@ class ContactDesktop extends StatelessWidget {
     return Container(
       // padding: Space.all(1, 1),
       // padding: EdgeInsets.symmetric(horizontal: AppDimensions.normalize(30)),
-      padding: EdgeInsets.symmetric(horizontal: size.width / 8),
+      padding: EdgeInsets.symmetric(horizontal: _getResponsivePadding(size.width)),
       child: Column(
         children: [
           CustomSectionHeading(text: dataProvider.getContent('contact_section_heading', defaultValue: "\nGet in Touch")),

@@ -20,7 +20,11 @@ class HomeMobile extends StatelessWidget {
     return Consumer<PublicDataProvider>(
       builder: (context, dataProvider, child) {
         return Padding(
-          padding: EdgeInsets.only(left: 10.w, top: 10.h, right: 10.w),
+          padding: EdgeInsets.only(
+            left: 10.w,
+            top: 15.h, // Increased to account for navbar height
+            right: 10.w
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

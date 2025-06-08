@@ -8,6 +8,8 @@ class _NavbarDesktop extends StatefulWidget {
 }
 
 class _NavbarDesktopState extends State<_NavbarDesktop> {
+
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -15,16 +17,22 @@ class _NavbarDesktopState extends State<_NavbarDesktop> {
     var theme = Theme.of(context);
     return BlocBuilder<ThemeCubit, ThemeState>(builder: (context, state) {
       return Container(
-        padding: EdgeInsets.symmetric(horizontal: size.width / 8, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: ResponsivePadding.getHorizontalPadding(size.width), vertical: 16),
         decoration: BoxDecoration(
           color: theme.navBarColor,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 15,
+              offset: const Offset(0, 3),
             ),
           ],
+          border: Border(
+            bottom: BorderSide(
+              color: Colors.black.withOpacity(0.05),
+              width: 1,
+            ),
+          ),
         ),
         child: Row(
           children: [
@@ -65,10 +73,18 @@ class _NavbarDesktopState extends State<_NavbarDesktop> {
                     onTap: () {
                       Navigator.of(context).pushNamed('/admin/login');
                     },
-                    child: Icon(
-                      Icons.admin_panel_settings_outlined,
-                      color: theme.textColor.withOpacity(0.7),
-                      size: 24,
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: theme.textColor.withOpacity(0.1),
+                      ),
+                      child: Icon(
+                        Icons.admin_panel_settings_outlined,
+                        color: theme.textColor,
+                        size: 20,
+                      ),
                     ),
                   );
                 }
@@ -87,10 +103,18 @@ class _NavbarDesktopState extends State<_NavbarDesktop> {
                       ),
                     );
                   },
-                  child: Icon(
-                    Icons.refresh,
-                    color: theme.textColor.withOpacity(0.7),
-                    size: 24,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: theme.textColor.withOpacity(0.1),
+                    ),
+                    child: Icon(
+                      Icons.refresh,
+                      color: theme.textColor,
+                      size: 20,
+                    ),
                   ),
                 );
               },
@@ -100,11 +124,18 @@ class _NavbarDesktopState extends State<_NavbarDesktop> {
                 onTap: () {
                   context.read<ThemeCubit>().updateTheme(!state.isDarkThemeOn);
                 },
-                child: Image.network(
-                  state.isDarkThemeOn ? IconUrls.darkIcon : IconUrls.lightIcon,
-                  height: 30,
-                  width: 30,
-                  color: state.isDarkThemeOn ? Colors.black : Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: theme.textColor.withOpacity(0.1),
+                  ),
+                  child: Icon(
+                    state.isDarkThemeOn ? Icons.dark_mode : Icons.light_mode,
+                    color: theme.textColor,
+                    size: 20,
+                  ),
                 )),
           ],
         ),
@@ -121,7 +152,22 @@ class _NavBarTablet extends StatelessWidget {
     final drawerProvider = Provider.of<DrawerProvider>(context);
     var theme = Theme.of(context);
     return Container(
-      color: theme.navBarColor,
+      decoration: BoxDecoration(
+        color: theme.navBarColor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 3),
+          ),
+        ],
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.black.withOpacity(0.05),
+            width: 1,
+          ),
+        ),
+      ),
       padding: EdgeInsets.symmetric(
           horizontal: Responsive.isTablet(context) ? 10.w : 10, vertical: 10),
       child: Row(

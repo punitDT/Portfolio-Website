@@ -68,6 +68,11 @@ class _FirestoreProjectCardState extends State<FirestoreProjectCard> {
                       ? CachedNetworkImage(
                           imageUrl: widget.project.bannerUrl,
                           fit: BoxFit.cover,
+                          httpHeaders: const {
+                            'Access-Control-Allow-Origin': '*',
+                            'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+                            'Access-Control-Allow-Headers': 'Origin, Content-Type',
+                          },
                           placeholder: (context, url) => Container(
                             color: Colors.grey[300],
                             child: const Center(
@@ -159,6 +164,11 @@ class _FirestoreProjectCardState extends State<FirestoreProjectCard> {
                                 imageUrl: widget.project.iconUrl,
                                 height: 24,
                                 width: 24,
+                                httpHeaders: const {
+                                  'Access-Control-Allow-Origin': '*',
+                                  'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+                                  'Access-Control-Allow-Headers': 'Origin, Content-Type',
+                                },
                                 errorWidget: (context, url, error) =>
                                     const Icon(Icons.web_asset, size: 24),
                               )

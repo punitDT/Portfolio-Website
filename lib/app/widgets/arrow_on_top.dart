@@ -31,7 +31,7 @@ class ArrowOnTopState extends State<ArrowOnTop> {
             children: [
               InkWell(
                 borderRadius: BorderRadius.circular(8.0),
-                onTap: () => scrollProvider.jumpTo(0),
+                onTap: () => scrollProvider.jumpTo(0, context),
                 onHover: (isHovering) {
                   if (isHovering) {
                     setState(() => isHover = true);

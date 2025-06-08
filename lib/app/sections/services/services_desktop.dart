@@ -8,6 +8,19 @@ class ServiceDesktop extends StatefulWidget {
 }
 
 class ServiceDesktopState extends State<ServiceDesktop> {
+  // Helper method for responsive padding
+  double _getResponsivePadding(double screenWidth) {
+    if (screenWidth > 1400) {
+      return screenWidth * 0.08; // 8% for very large screens
+    } else if (screenWidth > 1200) {
+      return screenWidth * 0.06; // 6% for large screens
+    } else if (screenWidth > 1000) {
+      return screenWidth * 0.05; // 5% for medium screens
+    } else {
+      return screenWidth * 0.04; // 4% for smaller screens
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -20,7 +33,7 @@ class ServiceDesktopState extends State<ServiceDesktop> {
     // Show loading state
     if (dataProvider.isLoading) {
       return Container(
-        padding: EdgeInsets.symmetric(horizontal: width / 8),
+        padding: EdgeInsets.symmetric(horizontal: _getResponsivePadding(width)),
         height: 400,
         child: const Center(child: CircularProgressIndicator()),
       );
@@ -47,7 +60,7 @@ class ServiceDesktopState extends State<ServiceDesktop> {
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: width / 8)
+      padding: EdgeInsets.symmetric(horizontal: _getResponsivePadding(width))
           .copyWith(bottom: height * 0.2),
       child: Column(
         children: [
@@ -99,7 +112,7 @@ class ServiceDesktopState extends State<ServiceDesktop> {
               children: [
                 ...rowServices.map((service) => Expanded(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: width * 0.015),
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.01), // Reduced padding
                     child: _FirestoreServiceCard(
                       key: ValueKey('desktop_service_${service.id ?? service.name}'), // Unique key for desktop
                       service: service,

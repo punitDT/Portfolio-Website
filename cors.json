@@ -1,0 +1,26 @@
+[
+  {
+    "origin": [
+      "https://portfolio-c1274.web.app",
+      "https://portfolio-c1274.firebaseapp.com"
+    ],
+    "method": ["GET", "HEAD", "OPTIONS"],
+    "maxAgeSeconds": 3600,
+    "responseHeader": [
+      "Content-Type",
+      "Access-Control-Allow-Origin",
+      "Access-Control-Allow-Methods",
+      "Access-Control-Allow-Headers",
+      "Access-Control-Max-Age",
+      "Cache-Control",
+      "Content-Disposition",
+      "Content-Encoding",
+      "Content-Language",
+      "Content-Range",
+      "Date",
+      "ETag",
+      "Expires",
+      "Last-Modified"
+    ]
+  }
+]

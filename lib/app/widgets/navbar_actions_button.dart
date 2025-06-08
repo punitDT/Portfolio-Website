@@ -40,7 +40,7 @@ class _NavBarActionButtonState extends State<NavBarActionButton> {
             setState(() => isHover = value);
           },
           onTap: () {
-            scrollProvider.jumpTo(widget.index);
+            scrollProvider.jumpTo(widget.index, context);
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

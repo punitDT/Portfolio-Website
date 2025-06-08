@@ -6,6 +6,7 @@ class _Body extends StatefulWidget {
 }
 
 class _BodyState extends State<_Body> with TickerProviderStateMixin {
+  // Drag scroll state
   bool _isDragging = false;
   double _lastPanPosition = 0;
   double _velocity = 0;
@@ -16,7 +17,7 @@ class _BodyState extends State<_Body> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _momentumController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 600),
       vsync: this,
     );
   }
@@ -28,10 +29,10 @@ class _BodyState extends State<_Body> with TickerProviderStateMixin {
   }
 
   void _startMomentumScroll(ScrollController controller, double velocity) {
-    if (velocity.abs() < 50) return; // Minimum velocity threshold
+    if (velocity.abs() < 30) return; // Minimum velocity threshold
 
     final startOffset = controller.offset;
-    final targetOffset = startOffset + velocity * 0.5; // Momentum factor
+    final targetOffset = startOffset + velocity * 0.3; // Momentum factor
 
     _momentumAnimation = Tween<double>(
       begin: startOffset,
@@ -79,7 +80,7 @@ class _BodyState extends State<_Body> with TickerProviderStateMixin {
 
               // Apply drag scrolling with sensitivity
               final currentOffset = scrollProvider.scrollController.offset;
-              final newOffset = currentOffset + (delta * 1.2); // Sensitivity multiplier
+              final newOffset = currentOffset + (delta * 1.0); // Sensitivity multiplier
 
               scrollProvider.scrollController.jumpTo(
                 newOffset.clamp(
@@ -100,9 +101,9 @@ class _BodyState extends State<_Body> with TickerProviderStateMixin {
           },
           child: SingleChildScrollView(
             controller: scrollProvider.scrollController,
-            physics: const BouncingScrollPhysics(),
+            physics: const ClampingScrollPhysics(), // Better scroll physics
             child: Column(
-              children: BodyUtils.views,
+              children: BodyUtils.getViews(context),
             ),
           ),
         ),

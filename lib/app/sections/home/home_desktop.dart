@@ -9,26 +9,35 @@ import 'package:provider/provider.dart';
 import 'package:mysite/app/widgets/color_chage_btn.dart';
 import 'package:mysite/core/configs/configs.dart';
 import 'package:mysite/core/providers/public_data_provider.dart';
+import 'package:mysite/core/util/responsive_padding.dart';
 
 class HomeDesktop extends StatelessWidget {
   const HomeDesktop({Key? key}) : super(key: key);
+
+
 
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     final dataProvider = Provider.of<PublicDataProvider>(context);
+    Size size = MediaQuery.of(context).size;
 
     return SizedBox(
       height: 80.h,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.w),
+        padding: EdgeInsets.only(
+          left: ResponsivePadding.getHorizontalPadding(size.width), // Responsive padding
+          right: ResponsivePadding.getHorizontalPadding(size.width), // Responsive padding
+          top: 120, // Account for navbar height
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              margin: EdgeInsets.only(top: 10.h),
-              width: 55.w,
-              child: Column(
+            Expanded(
+              flex: 6,
+              child: Container(
+                margin: EdgeInsets.only(top: 5.h), // Reduced since we added top padding
+                child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -67,7 +76,7 @@ class HomeDesktop extends StatelessWidget {
                   ),
                   Space.y(1.5.w)!,
                   Padding(
-                    padding: EdgeInsets.only(right: 10.w),
+                    padding: EdgeInsets.only(right: 2.w), // Reduced padding
                     child: Text(dataProvider.getContent('mini_description', defaultValue: "Freelancer providing services for programming and design content needs. Join me down below and let's get started!"),
                         style: TextStyle(
                           fontSize: isFontSize(context, 20),
@@ -84,9 +93,13 @@ class HomeDesktop extends StatelessWidget {
                     },
                   ),
                 ],
+                ),
               ),
             ),
-            const ZoomAnimations(),
+            Expanded(
+              flex: 4,
+              child: const ZoomAnimations(),
+            ),
           ],
         ),
       ),

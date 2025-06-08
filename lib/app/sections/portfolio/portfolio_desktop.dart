@@ -18,6 +18,19 @@ class PortfolioDesktop extends StatefulWidget {
 class _PortfolioDesktopState extends State<PortfolioDesktop> {
   int listLength = 3;
 
+  // Helper method for responsive padding
+  double _getResponsivePadding(double screenWidth) {
+    if (screenWidth > 1400) {
+      return screenWidth * 0.08; // 8% for very large screens
+    } else if (screenWidth > 1200) {
+      return screenWidth * 0.06; // 6% for large screens
+    } else if (screenWidth > 1000) {
+      return screenWidth * 0.05; // 5% for medium screens
+    } else {
+      return screenWidth * 0.04; // 4% for smaller screens
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -80,7 +93,12 @@ class _PortfolioDesktopState extends State<PortfolioDesktop> {
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: size.width / 12, vertical: 4.w),
+      padding: EdgeInsets.only(
+        left: _getResponsivePadding(size.width), // Responsive padding
+        right: _getResponsivePadding(size.width), // Responsive padding
+        top: 4.w,
+        bottom: 4.w,
+      ),
       child: Column(
         children: [
           // Header Section
@@ -136,8 +154,8 @@ class _PortfolioDesktopState extends State<PortfolioDesktop> {
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
-        crossAxisSpacing: 3.w,
-        mainAxisSpacing: 3.w,
+        crossAxisSpacing: size.width * 0.02, // 2% of screen width
+        mainAxisSpacing: size.width * 0.02, // 2% of screen width
         childAspectRatio: 1.2, // Adjust for better proportions
       ),
       itemCount: projects.length,

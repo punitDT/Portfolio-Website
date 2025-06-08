@@ -49,7 +49,7 @@ class _MobileDrawer extends StatelessWidget {
                             ),
                             onPressed: () {
                               // scrollProvider.scrollMobile(e.key);
-                              scrollProvider.jumpTo(e.key);
+                              scrollProvider.jumpTo(e.key, context);
                               Navigator.pop(context);
                             },
                             child: ListTile(

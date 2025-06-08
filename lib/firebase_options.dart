@@ -3,8 +3,12 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:mysite/core/config/firebase_config.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
+///
+/// SECURITY NOTE: This now uses SecureFirebaseConfig to avoid exposing
+/// sensitive API keys in source code.
 ///
 /// Example:
 /// ```dart
@@ -16,67 +20,13 @@ import 'package:flutter/foundation.dart'
 /// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
-    if (kIsWeb) {
-      return web;
-    }
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-        return android;
-      case TargetPlatform.iOS:
-        return ios;
-      case TargetPlatform.macOS:
-        return macos;
-      case TargetPlatform.windows:
-        return windows;
-      case TargetPlatform.linux:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
-      default:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions are not supported for this platform.',
-        );
-    }
+    return SecureFirebaseConfig.currentPlatform;
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-      apiKey: "AIzaSyAPhc5SNg1acyT_D_jo4edQD43PeR8GbZs",
-      authDomain: "portfolio-c1274.firebaseapp.com",
-      projectId: "portfolio-c1274",
-      storageBucket: "portfolio-c1274.appspot.com",
-      messagingSenderId: "40081637330",
-      appId: "1:40081637330:web:5e49ab59e5f0755823120b");
-
-  static const FirebaseOptions android = FirebaseOptions(
-      apiKey: "AIzaSyAPhc5SNg1acyT_D_jo4edQD43PeR8GbZs",
-      authDomain: "portfolio-c1274.firebaseapp.com",
-      projectId: "portfolio-c1274",
-      storageBucket: "portfolio-c1274.appspot.com",
-      messagingSenderId: "40081637330",
-      appId: "1:40081637330:web:5e49ab59e5f0755823120b");
-
-  static const FirebaseOptions ios = FirebaseOptions(
-      apiKey: "AIzaSyAPhc5SNg1acyT_D_jo4edQD43PeR8GbZs",
-      authDomain: "portfolio-c1274.firebaseapp.com",
-      projectId: "portfolio-c1274",
-      storageBucket: "portfolio-c1274.appspot.com",
-      messagingSenderId: "40081637330",
-      appId: "1:40081637330:web:5e49ab59e5f0755823120b");
-
-  static const FirebaseOptions macos = FirebaseOptions(
-      apiKey: "AIzaSyAPhc5SNg1acyT_D_jo4edQD43PeR8GbZs",
-      authDomain: "portfolio-c1274.firebaseapp.com",
-      projectId: "portfolio-c1274",
-      storageBucket: "portfolio-c1274.appspot.com",
-      messagingSenderId: "40081637330",
-      appId: "1:40081637330:web:5e49ab59e5f0755823120b");
-
-  static const FirebaseOptions windows = FirebaseOptions(
-      apiKey: "AIzaSyAPhc5SNg1acyT_D_jo4edQD43PeR8GbZs",
-      authDomain: "portfolio-c1274.firebaseapp.com",
-      projectId: "portfolio-c1274",
-      storageBucket: "portfolio-c1274.appspot.com",
-      messagingSenderId: "40081637330",
-      appId: "1:40081637330:web:5e49ab59e5f0755823120b");
+  // Legacy getters for backward compatibility
+  static FirebaseOptions get web => SecureFirebaseConfig.web;
+  static FirebaseOptions get android => SecureFirebaseConfig.android;
+  static FirebaseOptions get ios => SecureFirebaseConfig.ios;
+  static FirebaseOptions get macos => SecureFirebaseConfig.macos;
+  static FirebaseOptions get windows => SecureFirebaseConfig.windows;
 }

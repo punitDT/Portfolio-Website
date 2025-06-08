@@ -14,32 +14,30 @@ dependencies:
 
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  # state management
+
+  # State management
   provider: ^6.0.1
   flutter_bloc: ^8.1.1
-  # http
-  http: ^0.13.1
-  # utils
+
+  # UI & Animation
   flutter_svg: ^1.1.5
-  # flip_card: ^0.6.0
   sizer: ^2.0.15
-  connectivity_plus: ^2.3.7
-  url_launcher: ^6.1.2
   carousel_slider: ^5.0.0
   animated_text_kit: ^4.2.1
-  scrollable_positioned_list: ^0.3.5
   cached_network_image: ^3.3.1
-  flutter_cache_manager: ^3.3.1
 
-  # web related
-  # flutter_html: any
-  # url_strategy: ^0.2.0
+  # Utilities
+  url_launcher: ^6.1.2
   universal_html: ^2.0.4
+  connectivity_plus: ^2.3.7
+
+  # Firebase
   firebase_core: ^3.13.1
   firebase_auth: ^5.5.4
   cloud_firestore: ^5.6.8
   firebase_storage: ^12.4.6
-  image_picker: ^1.1.2
+
+  # File handling (Admin panel)
   file_picker: ^10.1.9
 
 dev_dependencies:

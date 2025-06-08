@@ -249,6 +249,11 @@ class _FirestoreServiceCardState extends State<_FirestoreServiceCard> {
               width: 56,
               height: 56,
               fit: BoxFit.cover,
+              headers: const {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+                'Access-Control-Allow-Headers': 'Origin, Content-Type',
+              },
               errorBuilder: (context, error, stackTrace) => Icon(
                 Icons.build,
                 color: iconColor,

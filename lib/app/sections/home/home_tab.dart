@@ -33,7 +33,7 @@ class HomeTab extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 10.w, top: 10.h),
+            padding: EdgeInsets.only(left: 10.w, top: 15.h), // Increased to account for navbar
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

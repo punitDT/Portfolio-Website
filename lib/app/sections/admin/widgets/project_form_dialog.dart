@@ -420,16 +420,58 @@ class _ProjectFormDialogState extends State<ProjectFormDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
-    return AlertDialog(
-      title: Text(widget.project == null ? 'Add Project' : 'Edit Project'),
-      content: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.8,
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
+    return Dialog(
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.6, // Reduced width
+        constraints: const BoxConstraints(
+          maxWidth: 600, // Maximum width constraint
+          maxHeight: 700, // Maximum height constraint
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Dialog Header
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: theme.primaryColor.withValues(alpha: 0.1),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(8),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    widget.project == null ? Icons.add : Icons.edit,
+                    color: theme.primaryColor,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    widget.project == null ? 'Add Project' : 'Edit Project',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: theme.primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.close),
+                    tooltip: 'Close',
+                  ),
+                ],
+              ),
+            ),
+            // Dialog Content
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
                 // Title Field (Required)
                 TextFormField(
                   controller: _titleController,
@@ -720,37 +762,56 @@ class _ProjectFormDialogState extends State<ProjectFormDialog> {
                         ),
                       ],
                     ),
+                      ),
+                    ],
                   ),
-              ],
+                ),
+              ),
             ),
-          ),
+            // Dialog Actions
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey.withValues(alpha: 0.1),
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: _isLoading ? null : _saveProject,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.primaryColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : Text(widget.project == null
+                            ? (widget.isFirestoreEnabled ? 'Add Project' : 'Add Project (Demo)')
+                            : (widget.isFirestoreEnabled ? 'Update Project' : 'Update Project (Demo)')),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
-        ElevatedButton(
-          onPressed: _isLoading ? null : _saveProject,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: theme.primaryColor,
-            foregroundColor: Colors.white,
-          ),
-          child: _isLoading
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                )
-              : Text(widget.project == null
-                  ? (widget.isFirestoreEnabled ? 'Add Project' : 'Add Project (Demo)')
-                  : (widget.isFirestoreEnabled ? 'Update Project' : 'Update Project (Demo)')),
-        ),
-      ],
     );
   }
 }
