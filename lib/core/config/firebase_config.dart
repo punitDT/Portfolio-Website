@@ -95,29 +95,20 @@ class SecureFirebaseConfig {
     appId: _appId ?? _getDefaultAppId(),
   );
   
-  // Fallback values for development (these should be replaced with environment variables)
+  // Production-safe Firebase configuration
+  // Note: Firebase API keys are safe to expose publicly for web apps
+  // They are used for client-side authentication and are meant to be public
   static String _getDefaultApiKey() {
-    // In production, this should throw an error
-    if (kReleaseMode) {
-      throw Exception('Firebase API key not configured for production');
-    }
-    // For development only - replace with your actual key
-    return const String.fromEnvironment('FIREBASE_API_KEY', 
+    return const String.fromEnvironment('FIREBASE_API_KEY',
       defaultValue: 'AIzaSyAPhc5SNg1acyT_D_jo4edQD43PeR8GbZs');
   }
-  
+
   static String _getDefaultAppId() {
-    if (kReleaseMode) {
-      throw Exception('Firebase App ID not configured for production');
-    }
     return const String.fromEnvironment('FIREBASE_APP_ID',
       defaultValue: '1:40081637330:web:5e49ab59e5f0755823120b');
   }
-  
+
   static String _getDefaultMessagingSenderId() {
-    if (kReleaseMode) {
-      throw Exception('Firebase Messaging Sender ID not configured for production');
-    }
     return const String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID',
       defaultValue: '40081637330');
   }
