@@ -69,21 +69,24 @@ class PortfolioMobileTab extends StatelessWidget {
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width,
             ),
+            clipBehavior: Clip.none, // Prevent clipping of content
             child: CarouselSlider.builder(
               itemCount: projects.length,
               itemBuilder: (BuildContext context, int itemIndex, int i) {
                 final project = projects[i];
                 return Container(
-                  margin: EdgeInsets.symmetric(horizontal: 2.w),
+                  margin: EdgeInsets.symmetric(horizontal: 1.w), // Reduced margin
+                  clipBehavior: Clip.none, // Prevent clipping of card content
                   child: FirestoreProjectCard(project: project),
                 );
               },
               options: CarouselOptions(
                 height: height * 0.4,
-                viewportFraction: 0.85, // Better mobile viewport
+                viewportFraction: 0.8, // Reduced to prevent overflow
                 autoPlay: true,
                 autoPlayInterval: const Duration(seconds: 5),
                 enlargeCenterPage: true,
+                enlargeFactor: 0.15, // Reduced enlarge factor to prevent overflow
                 autoPlayCurve: Curves.fastOutSlowIn,
                 autoPlayAnimationDuration: const Duration(milliseconds: 800),
                 enableInfiniteScroll: false,

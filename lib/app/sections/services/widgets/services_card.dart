@@ -30,9 +30,10 @@ class _ServiceCardState extends State<_ServiceCard> {
       },
       child: Container(
         width: Responsive.isMobile(context)
-            ? MediaQuery.of(context).size.width * 0.8 // Use 80% of screen width for mobile
+            ? MediaQuery.of(context).size.width * 0.75 // Reduced width to prevent overflow
             : (Responsive.isTablet(context) ? 400 : null), // Let desktop cards expand to fill available space
         padding: EdgeInsets.all(Responsive.isMobile(context) ? 16.0 : 24.0), // Reduce padding on mobile
+        clipBehavior: Clip.none, // Prevent clipping of content
         decoration: BoxDecoration(
           gradient: isHover ? modernPurple : theme.serviceCard,
           borderRadius: BorderRadius.circular(20),
@@ -318,9 +319,10 @@ class _FirestoreServiceCardState extends State<_FirestoreServiceCard> {
       },
       child: Container(
         width: Responsive.isMobile(context)
-            ? MediaQuery.of(context).size.width * 0.8 // Use 80% of screen width for mobile
+            ? MediaQuery.of(context).size.width * 0.75 // Reduced width to prevent overflow
             : (Responsive.isTablet(context) ? 400 : null), // Let desktop cards expand to fill available space
         padding: EdgeInsets.all(Responsive.isMobile(context) ? 16.0 : 24.0), // Reduce padding on mobile
+        clipBehavior: Clip.none, // Prevent clipping of content
         decoration: BoxDecoration(
           gradient: isHover ? modernPurple : theme.serviceCard,
           borderRadius: BorderRadius.circular(20),

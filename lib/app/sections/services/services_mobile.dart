@@ -61,27 +61,30 @@ class ServiceMobile extends StatelessWidget {
           Container(
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.symmetric(horizontal: 2.w),
+            clipBehavior: Clip.none, // Prevent clipping of content
             child: CarouselSlider.builder(
               key: const ValueKey('services_carousel'), // Unique key for carousel
               itemCount: services.length,
               itemBuilder: (BuildContext context, int itemIndex, int i) => Container(
                 key: ValueKey('service_card_${services[i].id ?? services[i].name}_$i'), // Unique key for each card
                 margin: EdgeInsets.symmetric(horizontal: 1.w),
+                clipBehavior: Clip.none, // Prevent clipping of card content
                 child: _FirestoreServiceCard(
                   key: ValueKey('service_${services[i].id ?? services[i].name}'), // Unique key for service card
                   service: services[i],
                 ),
               ),
               options: CarouselOptions(
-                viewportFraction: 0.9, // Better mobile viewport to prevent overflow
-                height: 380, // Increased height for mobile content
+                viewportFraction: 0.85, // Slightly reduced to prevent overflow
+                height: 400, // Increased height for mobile content
                 autoPlay: true,
                 autoPlayInterval: const Duration(seconds: 5),
                 enlargeCenterPage: true,
+                enlargeFactor: 0.2, // Reduced enlarge factor to prevent overflow
                 autoPlayCurve: Curves.fastOutSlowIn,
                 autoPlayAnimationDuration: const Duration(milliseconds: 800),
                 enableInfiniteScroll: false,
-                padEnds: false, // Remove padding to prevent overflow
+                padEnds: true, // Add padding to prevent edge clipping
               ),
             ),
           )

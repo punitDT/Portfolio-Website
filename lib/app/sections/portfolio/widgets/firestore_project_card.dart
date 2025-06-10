@@ -46,9 +46,10 @@ class _FirestoreProjectCardState extends State<FirestoreProjectCard> {
       },
       child: Container(
         width: Responsive.isDesktop(context) ? 30.w :
-               Responsive.isTablet(context) ? 60.w : 85.w, // Better mobile width
+               Responsive.isTablet(context) ? 60.w : 80.w, // Reduced mobile width to prevent overflow
         height: Responsive.isDesktop(context) ? 36.h :
                 Responsive.isTablet(context) ? 32.h : 28.h, // Responsive height
+        clipBehavior: Clip.none, // Prevent clipping of content
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           boxShadow: isHover ? [glowShadow] : [modernCardShadow],

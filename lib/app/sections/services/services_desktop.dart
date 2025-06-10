@@ -111,8 +111,9 @@ class ServiceDesktopState extends State<ServiceDesktop> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ...rowServices.map((service) => Expanded(
-                  child: Padding(
+                  child: Container(
                     padding: EdgeInsets.symmetric(horizontal: width * 0.01), // Reduced padding
+                    clipBehavior: Clip.none, // Prevent clipping of content
                     child: _FirestoreServiceCard(
                       key: ValueKey('desktop_service_${service.id ?? service.name}'), // Unique key for desktop
                       service: service,

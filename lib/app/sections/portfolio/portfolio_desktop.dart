@@ -149,20 +149,26 @@ class _PortfolioDesktopState extends State<PortfolioDesktop> {
       crossAxisCount = 2;
     }
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        crossAxisSpacing: size.width * 0.02, // 2% of screen width
-        mainAxisSpacing: size.width * 0.02, // 2% of screen width
-        childAspectRatio: 1.2, // Adjust for better proportions
+    return Container(
+      clipBehavior: Clip.none, // Prevent clipping of content
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          crossAxisSpacing: size.width * 0.02, // 2% of screen width
+          mainAxisSpacing: size.width * 0.02, // 2% of screen width
+          childAspectRatio: 1.2, // Adjust for better proportions
+        ),
+        itemCount: projects.length,
+        itemBuilder: (context, index) {
+          final project = projects[index];
+          return Container(
+            clipBehavior: Clip.none, // Prevent clipping of card content
+            child: ModernProjectCard(project: project),
+          );
+        },
       ),
-      itemCount: projects.length,
-      itemBuilder: (context, index) {
-        final project = projects[index];
-        return ModernProjectCard(project: project);
-      },
     );
   }
 

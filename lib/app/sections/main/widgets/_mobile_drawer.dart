@@ -68,6 +68,7 @@ class _MobileDrawer extends StatelessWidget {
                   Space.y(5.w)!,
                   Consumer<AuthProvider>(
                     builder: (context, authProvider, child) {
+                      // Only show admin panel button when user is logged in
                       if (authProvider.isLoggedIn) {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -93,28 +94,8 @@ class _MobileDrawer extends StatelessWidget {
                           ),
                         );
                       } else {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: MaterialButton(
-                            hoverColor: theme.primaryColor.withAlpha(70),
-                            onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).pushNamed('/admin/login');
-                            },
-                            child: ListTile(
-                              leading: Icon(
-                                Icons.admin_panel_settings_outlined,
-                                color: theme.textColor.withOpacity(0.7),
-                              ),
-                              title: Text(
-                                'ADMIN LOGIN',
-                                style: TextStyle(
-                                  color: theme.textColor.withOpacity(0.7),
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
+                        // Hide admin login button - user can access via /admin/login directly
+                        return const SizedBox.shrink();
                       }
                     },
                   ),
