@@ -197,7 +197,7 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog>
 
   Widget _buildHeader(ThemeData theme, bool isDesktop, bool isMobile) {
     return Container(
-      height: isDesktop ? 180 : (isMobile ? 80 : 130),
+      height: isDesktop ? 200 : (isMobile ? 120 : 150),
       width: double.infinity,
       child: Stack(
         fit: StackFit.expand,
@@ -290,17 +290,17 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog>
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(isMobile ? 12 : 20),
               ),
               child: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
                 icon: Icon(Icons.close,
-                    color: Colors.white, size: isMobile ? 16 : 18),
+                    color: Colors.white, size: isMobile ? 14 : 18),
                 tooltip: 'Close',
-                padding: EdgeInsets.all(isMobile ? 6 : 8),
+                padding: EdgeInsets.all(isMobile ? 4 : 8),
                 constraints: BoxConstraints(
-                  minWidth: isMobile ? 28 : 32,
-                  minHeight: isMobile ? 28 : 32,
+                  minWidth: isMobile ? 24 : 32,
+                  minHeight: isMobile ? 24 : 32,
                 ),
               ),
             ),
@@ -363,8 +363,8 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog>
                         ),
                       ],
                     ),
-                    maxLines: isMobile ? 1 : 2,
-                    overflow: TextOverflow.ellipsis,
+                    maxLines: isMobile ? 3 : 4,
+                    overflow: TextOverflow.visible,
                   ),
                 ),
               ],
