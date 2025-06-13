@@ -290,18 +290,19 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog>
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(isMobile ? 12 : 20),
+                shape: BoxShape.circle,
               ),
               child: IconButton(
+                padding: EdgeInsets.zero,
+                style: IconButton.styleFrom(
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: EdgeInsets.zero,
+                  visualDensity: VisualDensity.compact,
+                ),
                 onPressed: () => Navigator.of(context).pop(),
                 icon: Icon(Icons.close,
                     color: Colors.white, size: isMobile ? 14 : 18),
                 tooltip: 'Close',
-                padding: EdgeInsets.all(isMobile ? 4 : 8),
-                constraints: BoxConstraints(
-                  minWidth: isMobile ? 24 : 32,
-                  minHeight: isMobile ? 24 : 32,
-                ),
               ),
             ),
           ),
@@ -312,6 +313,7 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog>
             left: isMobile ? 12 : 24,
             right: isMobile ? 12 : 24,
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Project Icon
                 if (widget.project.iconUrl.isNotEmpty)
