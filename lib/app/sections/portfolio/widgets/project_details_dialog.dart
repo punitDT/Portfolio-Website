@@ -138,7 +138,7 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog>
                 constraints: BoxConstraints(
                   maxHeight: isDesktop
                       ? size.height * 0.7
-                      : (isMobile ? size.height * 0.6 : size.height * 0.65),
+                      : (isMobile ? size.height * 0.8 : size.height * 0.75),
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(isMobile ? 16 : 24),
@@ -177,7 +177,7 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog>
                           scrollDirection: Axis.vertical,
                           physics: const BouncingScrollPhysics(),
                           padding: EdgeInsets.all(
-                              isDesktop ? 32 : (isMobile ? 16 : 24)),
+                              isDesktop ? 32 : (isMobile ? 12 : 20)),
                           child: _buildContent(theme, isDesktop, isMobile),
                         ),
                       ),
@@ -197,7 +197,7 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog>
 
   Widget _buildHeader(ThemeData theme, bool isDesktop, bool isMobile) {
     return Container(
-      height: isDesktop ? 180 : (isMobile ? 100 : 130),
+      height: isDesktop ? 180 : (isMobile ? 80 : 130),
       width: double.infinity,
       child: Stack(
         fit: StackFit.expand,
@@ -462,27 +462,27 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog>
   Widget _buildImageGrid(bool isDesktop, bool isMobile) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    // Calculate responsive grid layout
+    // Calculate responsive grid layout - smaller images since they're clickable
     int crossAxisCount;
     double childAspectRatio;
-    double spacing = isDesktop ? 16.0 : (isMobile ? 12.0 : 14.0);
-    double borderRadius = isDesktop ? 16.0 : (isMobile ? 12.0 : 14.0);
+    double spacing = isDesktop ? 12.0 : (isMobile ? 8.0 : 10.0);
+    double borderRadius = isDesktop ? 12.0 : (isMobile ? 8.0 : 10.0);
 
     if (isDesktop) {
-      crossAxisCount = 3;
-      childAspectRatio = 0.7; // Slightly portrait for mobile screenshots
+      crossAxisCount = 4; // More columns for smaller images
+      childAspectRatio = 0.8; // Slightly more square
     } else if (isMobile) {
-      crossAxisCount = 2;
-      childAspectRatio = 0.75; // Good for mobile screenshots
+      crossAxisCount = 3; // More columns on mobile too
+      childAspectRatio = 0.85; // More square for mobile
     } else {
-      crossAxisCount = 2;
-      childAspectRatio = 0.7;
+      crossAxisCount = 3;
+      childAspectRatio = 0.8;
     }
 
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.all(isMobile ? 8 : 12),
+      padding: EdgeInsets.all(isMobile ? 2 : 4),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
         crossAxisSpacing: spacing,
@@ -503,14 +503,14 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog>
               ),
               boxShadow: [
                 BoxShadow(
-                  color: primaryColor.withOpacity(0.08),
-                  blurRadius: isDesktop ? 8 : (isMobile ? 4 : 6),
-                  offset: const Offset(0, 2),
+                  color: primaryColor.withOpacity(0.06),
+                  blurRadius: isDesktop ? 6 : (isMobile ? 3 : 4),
+                  offset: const Offset(0, 1),
                   spreadRadius: 0,
                 ),
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: isDesktop ? 4 : (isMobile ? 2 : 3),
+                  color: Colors.black.withOpacity(0.03),
+                  blurRadius: isDesktop ? 3 : (isMobile ? 1 : 2),
                   offset: const Offset(0, 1),
                 ),
               ],
@@ -623,29 +623,29 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog>
         Row(
           children: [
             Container(
-              padding: EdgeInsets.all(isMobile ? 6 : 8),
+              padding: EdgeInsets.all(isMobile ? 4 : 6),
               decoration: BoxDecoration(
                 color: primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(isMobile ? 6 : 8),
+                borderRadius: BorderRadius.circular(isMobile ? 4 : 6),
               ),
               child: Icon(
                 icon,
-                size: isMobile ? 16 : 20,
+                size: isMobile ? 14 : 18,
                 color: primaryColor,
               ),
             ),
-            SizedBox(width: isMobile ? 8 : 12),
+            SizedBox(width: isMobile ? 6 : 10),
             Text(
               title,
               style: TextStyle(
-                fontSize: isMobile ? 16 : 18,
+                fontSize: isMobile ? 14 : 16,
                 fontWeight: FontWeight.bold,
                 color: primaryColor,
               ),
             ),
           ],
         ),
-        SizedBox(height: isMobile ? 12 : 16),
+        SizedBox(height: isMobile ? 8 : 12),
         child,
       ],
     );
@@ -653,7 +653,7 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog>
 
   Widget _buildDivider(bool isMobile) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: isMobile ? 20 : 28),
+      margin: EdgeInsets.symmetric(vertical: isMobile ? 16 : 24),
       child: Row(
         children: [
           Expanded(
@@ -677,7 +677,7 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog>
 
   Widget _buildActions(ThemeData theme, bool isDesktop, bool isMobile) {
     return Container(
-      padding: EdgeInsets.all(isMobile ? 16 : (isDesktop ? 32 : 24)),
+      padding: EdgeInsets.all(isMobile ? 12 : (isDesktop ? 32 : 24)),
       decoration: BoxDecoration(
         color: theme.scaffoldBackgroundColor.withOpacity(0.8),
         border: Border(
@@ -687,113 +687,59 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog>
           ),
         ),
       ),
-      child: isMobile
-          ? Column(
-              children: [
-                // Open Project Button (full width on mobile)
-                if (widget.project.link != null &&
-                    widget.project.link!.isNotEmpty)
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () => _openURL(widget.project.link),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 4,
-                      ),
-                      icon: const Icon(Icons.launch, size: 18),
-                      label: const Text(
-                        'Open Project',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                if (widget.project.link != null &&
-                    widget.project.link!.isNotEmpty)
-                  const SizedBox(height: 12),
-
-                // Close Button (full width on mobile)
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(color: primaryColor.withOpacity(0.3)),
-                      ),
-                    ),
-                    child: const Text(
-                      'Close',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                // Close Button
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    'Close',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(width: 16),
-
-                // Open Project Button
-                if (widget.project.link != null &&
-                    widget.project.link!.isNotEmpty)
-                  ElevatedButton.icon(
-                    onPressed: () => _openURL(widget.project.link),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 4,
-                    ),
-                    icon: const Icon(Icons.launch, size: 20),
-                    label: const Text(
-                      'Open Project',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-              ],
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          // Close Button
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.symmetric(
+                  horizontal: isMobile ? 16 : 24, vertical: isMobile ? 8 : 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(isMobile ? 8 : 12),
+                side: isMobile
+                    ? BorderSide(color: primaryColor.withOpacity(0.3))
+                    : BorderSide.none,
+              ),
             ),
+            child: Text(
+              'Close',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: isMobile ? 14 : 16,
+              ),
+            ),
+          ),
+
+          SizedBox(width: isMobile ? 8 : 16),
+
+          // Open Project Button
+          if (widget.project.link != null && widget.project.link!.isNotEmpty)
+            ElevatedButton.icon(
+              onPressed: () => _openURL(widget.project.link),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 16 : 24,
+                    vertical: isMobile ? 8 : 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(isMobile ? 8 : 12),
+                ),
+                elevation: isMobile ? 2 : 4,
+              ),
+              icon: Icon(Icons.launch, size: isMobile ? 14 : 20),
+              label: Text(
+                'Open Project',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: isMobile ? 14 : 16,
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
