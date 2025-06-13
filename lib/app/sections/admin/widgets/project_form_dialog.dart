@@ -6,6 +6,8 @@ import 'package:mysite/core/services/storage_service.dart';
 import 'package:mysite/core/services/firebase_service.dart';
 import 'package:mysite/core/services/admin_auth_service.dart';
 import 'dart:typed_data';
+import 'package:flutter/services.dart';
+import 'package:desktop_drop/desktop_drop.dart';
 
 class ProjectFormDialog extends StatefulWidget {
   final ProjectModel? project;
@@ -28,6 +30,7 @@ class _ProjectFormDialogState extends State<ProjectFormDialog> {
   final _linkController = TextEditingController();
   final _bannerUrlController = TextEditingController();
   final _iconUrlController = TextEditingController();
+  final _technologiesController = TextEditingController();
 
 
   bool _isLoading = false;
@@ -35,6 +38,14 @@ class _ProjectFormDialogState extends State<ProjectFormDialog> {
   String? _selectedIconFileName;
   Uint8List? _selectedBannerBytes;
   Uint8List? _selectedIconBytes;
+
+  // Slider images management
+  List<String> _sliderImageUrls = [];
+  List<String?> _selectedSliderFileNames = [];
+  List<Uint8List?> _selectedSliderBytes = [];
+
+  // Drag & drop state
+  bool _isDragOver = false;
 
   @override
   void initState() {
@@ -45,7 +56,17 @@ class _ProjectFormDialogState extends State<ProjectFormDialog> {
       _linkController.text = widget.project!.link ?? '';
       _bannerUrlController.text = widget.project!.bannerUrl;
       _iconUrlController.text = widget.project!.iconUrl;
+      _technologiesController.text = widget.project!.technologies.join(', ');
 
+      // Initialize slider images with growable lists for editing
+      _sliderImageUrls = List<String>.from(widget.project!.sliderImages, growable: true);
+      _selectedSliderFileNames = List<String?>.filled(_sliderImageUrls.length, null, growable: true);
+      _selectedSliderBytes = List<Uint8List?>.filled(_sliderImageUrls.length, null, growable: true);
+    } else {
+      // Initialize empty growable lists for new projects
+      _sliderImageUrls = <String>[];
+      _selectedSliderFileNames = <String?>[];
+      _selectedSliderBytes = <Uint8List?>[];
     }
   }
 
@@ -56,11 +77,12 @@ class _ProjectFormDialogState extends State<ProjectFormDialog> {
     _linkController.dispose();
     _bannerUrlController.dispose();
     _iconUrlController.dispose();
+    _technologiesController.dispose();
 
     super.dispose();
   }
 
-  Future<void> _pickFile(String type) async {
+  Future<void> _pickFile(String type, [int? sliderIndex]) async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.image,
@@ -87,6 +109,21 @@ class _ProjectFormDialogState extends State<ProjectFormDialog> {
               _selectedIconBytes = file.bytes;
               _iconUrlController.text = 'Selected: ${file.name}';
               break;
+            case 'slider':
+              if (sliderIndex != null && sliderIndex >= 0 && sliderIndex < _sliderImageUrls.length) {
+                // Ensure all lists have the same length
+                while (_selectedSliderFileNames.length <= sliderIndex) {
+                  _selectedSliderFileNames.add(null);
+                }
+                while (_selectedSliderBytes.length <= sliderIndex) {
+                  _selectedSliderBytes.add(null);
+                }
+
+                _selectedSliderFileNames[sliderIndex] = file.name;
+                _selectedSliderBytes[sliderIndex] = file.bytes;
+                _sliderImageUrls[sliderIndex] = 'Selected: ${file.name}';
+              }
+              break;
           }
         });
       }
@@ -95,6 +132,61 @@ class _ProjectFormDialogState extends State<ProjectFormDialog> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error picking file: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+
+
+  void _removeSliderImage(int index) {
+    setState(() {
+      // Bounds checking to prevent RangeError
+      if (index >= 0 && index < _sliderImageUrls.length) {
+        _sliderImageUrls.removeAt(index);
+      }
+      if (index >= 0 && index < _selectedSliderFileNames.length) {
+        _selectedSliderFileNames.removeAt(index);
+      }
+      if (index >= 0 && index < _selectedSliderBytes.length) {
+        _selectedSliderBytes.removeAt(index);
+      }
+    });
+  }
+
+
+
+  bool _isImageFile(String fileName) {
+    final extension = fileName.toLowerCase().split('.').last;
+    return ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].contains(extension);
+  }
+
+  Future<void> _pickMultipleSliderImages() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: true,
+        withData: true,
+      );
+
+      if (result != null && result.files.isNotEmpty) {
+        setState(() {
+          for (final file in result.files) {
+            if (file.bytes != null) {
+              _sliderImageUrls.add('Selected: ${file.name}');
+              _selectedSliderFileNames.add(file.name);
+              _selectedSliderBytes.add(file.bytes);
+            }
+          }
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error picking files: ${e.toString()}'),
             backgroundColor: Colors.red,
           ),
         );
@@ -147,6 +239,12 @@ class _ProjectFormDialogState extends State<ProjectFormDialog> {
         }
       }
 
+      // Parse technologies from comma-separated string
+      final technologiesText = _technologiesController.text.trim();
+      final technologies = technologiesText.isEmpty
+          ? <String>[]
+          : technologiesText.split(',').map((tech) => tech.trim()).where((tech) => tech.isNotEmpty).toList();
+
       final projectData = ProjectModel(
         id: projectId,
         title: _titleController.text.trim(),
@@ -154,6 +252,8 @@ class _ProjectFormDialogState extends State<ProjectFormDialog> {
         link: _linkController.text.trim().isEmpty ? null : _linkController.text.trim(),
         bannerUrl: bannerUrl,
         iconUrl: iconUrl,
+        sliderImages: [], // Will be updated after uploads
+        technologies: technologies,
         createdAt: widget.project?.createdAt ?? now,
         updatedAt: now,
         isActive: widget.project?.isActive ?? true,
@@ -238,12 +338,34 @@ class _ProjectFormDialogState extends State<ProjectFormDialog> {
           iconUrl = widget.project!.iconUrl;
         }
 
+        // Upload slider images
+        for (int i = 0; i < _selectedSliderBytes.length; i++) {
+          if (_selectedSliderBytes[i] != null && _selectedSliderFileNames[i] != null) {
+            print('Uploading slider image ${i + 1}...');
+            final sliderUrl = await StorageService.uploadProjectSliderImage(
+              projectId: projectId,
+              fileName: _selectedSliderFileNames[i]!,
+              fileBytes: _selectedSliderBytes[i]!,
+              imageIndex: i,
+            );
+            _sliderImageUrls[i] = sliderUrl;
+            print('Slider image ${i + 1} uploaded: $sliderUrl');
+          }
+        }
+
+        // Clean up slider images - remove empty URLs and "Selected:" placeholders
+        final finalSliderImages = _sliderImageUrls
+            .where((url) => url.isNotEmpty && !url.startsWith('Selected:'))
+            .toList();
+
         // Update project data with new URLs if uploads occurred
         if ((_selectedBannerBytes != null && _selectedBannerFileName != null) ||
-            (_selectedIconBytes != null && _selectedIconFileName != null)) {
+            (_selectedIconBytes != null && _selectedIconFileName != null) ||
+            _selectedSliderBytes.any((bytes) => bytes != null)) {
           final updatedProjectData = projectData.copyWith(
             bannerUrl: bannerUrl,
             iconUrl: iconUrl,
+            sliderImages: finalSliderImages,
           );
 
           // Save to Firestore with updated URLs
@@ -257,14 +379,17 @@ class _ProjectFormDialogState extends State<ProjectFormDialog> {
             print('Project updated successfully');
           }
         } else {
-          // Save to Firestore with original URLs
+          // Save to Firestore with cleaned slider images
+          final finalProjectData = projectData.copyWith(
+            sliderImages: finalSliderImages,
+          );
           if (widget.project == null) {
             print('Adding new project...');
-            await ProjectService.addProject(projectData);
+            await ProjectService.addProject(finalProjectData);
             print('New project added successfully');
           } else {
             print('Updating existing project with ID: ${widget.project!.id}');
-            await ProjectService.updateProject(widget.project!.id!, projectData);
+            await ProjectService.updateProject(widget.project!.id!, finalProjectData);
             print('Project updated successfully');
           }
         }
@@ -528,6 +653,19 @@ class _ProjectFormDialogState extends State<ProjectFormDialog> {
                 ),
                 const SizedBox(height: 16),
 
+                // Technologies Field (Optional)
+                TextFormField(
+                  controller: _technologiesController,
+                  decoration: const InputDecoration(
+                    labelText: 'Technologies Used (optional)',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.code),
+                    hintText: 'Flutter, Firebase, Node.js (comma separated)',
+                  ),
+                  maxLines: 2,
+                ),
+                const SizedBox(height: 16),
+
                 // Banner URL/Upload with Preview
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -741,6 +879,10 @@ class _ProjectFormDialogState extends State<ProjectFormDialog> {
                 ),
                 const SizedBox(height: 16),
 
+                // Slider Images Section
+                _buildSliderImagesSection(theme),
+                const SizedBox(height: 16),
+
                 // Info text
                 if (!widget.isFirestoreEnabled)
                   Container(
@@ -811,6 +953,256 @@ class _ProjectFormDialogState extends State<ProjectFormDialog> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSliderImagesSection(ThemeData theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Header with title only
+        Text(
+          'Slider Images (optional)',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: theme.primaryColor,
+          ),
+        ),
+        const SizedBox(height: 8),
+
+        // Drag & Drop Zone
+        DropTarget(
+          onDragDone: (detail) async {
+            final files = detail.files.where((file) => _isImageFile(file.name)).toList();
+            if (files.isNotEmpty) {
+              for (final file in files) {
+                try {
+                  final bytes = await file.readAsBytes();
+                  setState(() {
+                    _sliderImageUrls.add('Selected: ${file.name}');
+                    _selectedSliderFileNames.add(file.name);
+                    _selectedSliderBytes.add(bytes);
+                  });
+                } catch (e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Error reading file ${file.name}: ${e.toString()}'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
+              }
+            }
+          },
+          onDragEntered: (detail) {
+            setState(() {
+              _isDragOver = true;
+            });
+          },
+          onDragExited: (detail) {
+            setState(() {
+              _isDragOver = false;
+            });
+          },
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: _isDragOver ? theme.primaryColor : Colors.grey.withOpacity(0.3),
+                width: _isDragOver ? 2 : 1,
+                style: BorderStyle.solid,
+              ),
+              borderRadius: BorderRadius.circular(8),
+              color: _isDragOver ? theme.primaryColor.withOpacity(0.1) : Colors.grey.withOpacity(0.05),
+            ),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.cloud_upload,
+                  size: 48,
+                  color: _isDragOver ? theme.primaryColor : Colors.grey,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Drag & Drop Images Here',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: _isDragOver ? theme.primaryColor : Colors.grey[600],
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'or click the button below to select images',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[500],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ElevatedButton.icon(
+                  onPressed: _pickMultipleSliderImages,
+                  icon: const Icon(Icons.photo_library),
+                  label: const Text('Browse Images'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.primaryColor,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // Images List
+        if (_sliderImageUrls.isNotEmpty) ...[
+          Text(
+            'Selected Images (${_sliderImageUrls.length})',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: theme.primaryColor,
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          // Grid of images
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+              childAspectRatio: 1,
+            ),
+            itemCount: _sliderImageUrls.length,
+            itemBuilder: (context, index) {
+              return _buildSliderImageCard(index, theme);
+            },
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildSliderImageCard(int index, ThemeData theme) {
+    // Bounds checking to prevent RangeError
+    if (index >= _sliderImageUrls.length) {
+      return Container();
+    }
+
+    final imageUrl = _sliderImageUrls[index];
+    final isSelected = imageUrl.startsWith('Selected:');
+    final fileName = index < _selectedSliderFileNames.length ? _selectedSliderFileNames[index] : null;
+    final imageBytes = index < _selectedSliderBytes.length ? _selectedSliderBytes[index] : null;
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.withOpacity(0.3)),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Stack(
+        children: [
+          // Image preview
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: isSelected && imageBytes != null
+                  ? Image.memory(
+                      imageBytes,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: Colors.green.withOpacity(0.1),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.check_circle, color: Colors.green, size: 24),
+                            const SizedBox(height: 4),
+                            Text(
+                              fileName ?? 'File',
+                              style: const TextStyle(
+                                color: Colors.green,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : isSelected
+                      ? Container(
+                          color: Colors.green.withOpacity(0.1),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.check_circle, color: Colors.green, size: 24),
+                              const SizedBox(height: 4),
+                              Text(
+                                fileName ?? 'File',
+                                style: const TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        )
+                      : imageUrl.startsWith('http')
+                          ? Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Container(
+                                color: Colors.grey[200],
+                                child: const Center(
+                                  child: Icon(Icons.error, color: Colors.red, size: 24),
+                                ),
+                              ),
+                            )
+                          : Container(
+                              color: Colors.grey[200],
+                              child: const Center(
+                                child: Icon(Icons.image, color: Colors.grey, size: 24),
+                              ),
+                            ),
+            ),
+          ),
+
+          // Remove button
+          Positioned(
+            top: 4,
+            right: 4,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: IconButton(
+                onPressed: () => _removeSliderImage(index),
+                icon: const Icon(Icons.close, color: Colors.white, size: 16),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 24, minHeight: 24),
+                tooltip: 'Remove Image',
+              ),
+            ),
+          ),
+
+          // Edit button (removed as per user request)
+        ],
       ),
     );
   }

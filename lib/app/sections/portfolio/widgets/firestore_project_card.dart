@@ -5,7 +5,7 @@ import 'package:mysite/core/res/responsive.dart';
 import 'package:mysite/core/color/colors.dart';
 import 'package:sizer/sizer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'project_details_dialog.dart';
 
 class FirestoreProjectCard extends StatefulWidget {
   final ProjectModel project;
@@ -18,19 +18,11 @@ class FirestoreProjectCard extends StatefulWidget {
 class _FirestoreProjectCardState extends State<FirestoreProjectCard> {
   bool isHover = false;
 
-  void _openURL(String? url) async {
-    if (url != null && url.isNotEmpty) {
-      try {
-        final uri = Uri.parse(url);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        } else {
-          print('Could not launch $url');
-        }
-      } catch (e) {
-        print('Error opening URL: $e');
-      }
-    }
+  void _openProjectDetails() {
+    showDialog(
+      context: context,
+      builder: (context) => ProjectDetailsDialog(project: widget.project),
+    );
   }
 
   @override
@@ -40,7 +32,7 @@ class _FirestoreProjectCardState extends State<FirestoreProjectCard> {
       hoverColor: Colors.transparent,
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
-      onTap: () => _openURL(widget.project.link),
+      onTap: _openProjectDetails,
       onHover: (isHovering) {
         setState(() => isHover = isHovering);
       },
@@ -150,25 +142,25 @@ class _FirestoreProjectCardState extends State<FirestoreProjectCard> {
                     // Icon
                     if (widget.project.iconUrl.isNotEmpty)
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(6),
                         ),
                         child: widget.project.iconUrl.startsWith('http')
                             ? CachedNetworkImage(
                                 imageUrl: widget.project.iconUrl,
-                                height: 24,
-                                width: 24,
+                                height: 16,
+                                width: 16,
                                 errorWidget: (context, url, error) =>
-                                    const Icon(Icons.web_asset, size: 24),
+                                    const Icon(Icons.web_asset, size: 16),
                               )
                             : Image.asset(
                                 widget.project.iconUrl,
-                                height: 24,
-                                width: 24,
+                                height: 16,
+                                width: 16,
                                 errorBuilder: (context, error, stackTrace) =>
-                                    const Icon(Icons.web_asset, size: 24),
+                                    const Icon(Icons.web_asset, size: 16),
                               ),
                       ),
                     const SizedBox(height: 12),

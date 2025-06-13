@@ -141,6 +141,54 @@ class StorageService {
     }
   }
 
+  // Upload slider image for project (user-specific path)
+  static Future<String> uploadProjectSliderImage({
+    required String projectId,
+    required String fileName,
+    required Uint8List fileBytes,
+    required int imageIndex,
+  }) async {
+    try {
+      // Get current authenticated user
+      final currentUser = FirebaseService.currentUser;
+      if (currentUser == null) {
+        throw Exception('User must be authenticated to upload files');
+      }
+
+      // Use user-specific path as required by Firebase Storage rules
+      final cleanFileName = fileName.replaceAll(' ', '_').toLowerCase();
+      final storageFileName = '${projectId}_slider_${imageIndex}_$cleanFileName';
+      final storagePath = 'user_uploads/${currentUser.uid}/$storageFileName';
+
+      final ref = FirebaseService.storage
+          .ref()
+          .child(storagePath);
+
+      final uploadTask = ref.putData(
+        fileBytes,
+        SettableMetadata(
+          contentType: _getContentType(fileName),
+          customMetadata: {
+            'projectId': projectId,
+            'type': 'slider_image',
+            'imageIndex': imageIndex.toString(),
+            'uploadedAt': DateTime.now().toIso8601String(),
+            'uploadedBy': currentUser.uid,
+          },
+        ),
+      );
+
+      final snapshot = await uploadTask;
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+
+      print('Slider image uploaded successfully to: $storagePath');
+      return downloadUrl;
+    } catch (e) {
+      print('Error uploading slider image: $e');
+      throw Exception('Failed to upload slider image: ${e.toString()}');
+    }
+  }
+
   // Delete project images when project is deleted
   static Future<void> deleteProjectImages(String projectId) async {
     try {

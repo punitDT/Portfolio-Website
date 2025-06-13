@@ -7,6 +7,8 @@ class ProjectModel {
   final String? link;
   final String bannerUrl;
   final String iconUrl;
+  final List<String> sliderImages;
+  final List<String> technologies;
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isActive;
@@ -19,6 +21,8 @@ class ProjectModel {
     this.link,
     required this.bannerUrl,
     required this.iconUrl,
+    this.sliderImages = const [],
+    this.technologies = const [],
     required this.createdAt,
     required this.updatedAt,
     this.isActive = true,
@@ -35,6 +39,8 @@ class ProjectModel {
       link: data['link'],
       bannerUrl: data['bannerUrl'] ?? '',
       iconUrl: data['iconUrl'] ?? '',
+      sliderImages: List<String>.from(data['sliderImages'] ?? []),
+      technologies: List<String>.from(data['technologies'] ?? []),
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       isActive: data['isActive'] ?? true,
@@ -50,6 +56,8 @@ class ProjectModel {
       'link': link,
       'bannerUrl': bannerUrl,
       'iconUrl': iconUrl,
+      'sliderImages': sliderImages,
+      'technologies': technologies,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': Timestamp.fromDate(updatedAt),
       'isActive': isActive,
@@ -65,6 +73,8 @@ class ProjectModel {
     String? link,
     String? bannerUrl,
     String? iconUrl,
+    List<String>? sliderImages,
+    List<String>? technologies,
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isActive,
@@ -77,6 +87,8 @@ class ProjectModel {
       link: link ?? this.link,
       bannerUrl: bannerUrl ?? this.bannerUrl,
       iconUrl: iconUrl ?? this.iconUrl,
+      sliderImages: sliderImages ?? this.sliderImages,
+      technologies: technologies ?? this.technologies,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isActive: isActive ?? this.isActive,

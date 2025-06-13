@@ -27,7 +27,8 @@ class PortfolioMobileTab extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 10.w),
           child: CustomSectionSubHeading(
             text: dataProvider.getContent('portfolio_sub_heading',
-                defaultValue: "Since the beginning of my journey as a developer, I have created digital products for business and consumer use. This is a little bit."),
+                defaultValue:
+                    "Since the beginning of my journey as a developer, I have created digital products for business and consumer use. This is a little bit."),
           ),
         ),
         Space.y(5.w)!,
@@ -75,18 +76,21 @@ class PortfolioMobileTab extends StatelessWidget {
               itemBuilder: (BuildContext context, int itemIndex, int i) {
                 final project = projects[i];
                 return Container(
-                  margin: EdgeInsets.symmetric(horizontal: 1.w), // Reduced margin
+                  margin:
+                      EdgeInsets.symmetric(horizontal: 1.w), // Reduced margin
                   clipBehavior: Clip.none, // Prevent clipping of card content
                   child: FirestoreProjectCard(project: project),
                 );
               },
               options: CarouselOptions(
+                clipBehavior: Clip.none,
                 height: height * 0.4,
                 viewportFraction: 0.8, // Reduced to prevent overflow
                 autoPlay: true,
                 autoPlayInterval: const Duration(seconds: 5),
                 enlargeCenterPage: true,
-                enlargeFactor: 0.15, // Reduced enlarge factor to prevent overflow
+                enlargeFactor:
+                    0.15, // Reduced enlarge factor to prevent overflow
                 autoPlayCurve: Curves.fastOutSlowIn,
                 autoPlayAnimationDuration: const Duration(milliseconds: 800),
                 enableInfiniteScroll: false,

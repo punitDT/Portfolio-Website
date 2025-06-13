@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:mysite/core/color/colors.dart';
+import 'project_details_dialog.dart';
 
 class ModernProjectCard extends StatefulWidget {
   final dynamic project;
@@ -39,17 +39,11 @@ class _ModernProjectCardState extends State<ModernProjectCard>
     super.dispose();
   }
 
-  void _openURL(String? url) async {
-    if (url != null && url.isNotEmpty) {
-      try {
-        final uri = Uri.parse(url);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        }
-      } catch (e) {
-        print('Error opening URL: $e');
-      }
-    }
+  void _openProjectDetails() {
+    showDialog(
+      context: context,
+      builder: (context) => ProjectDetailsDialog(project: widget.project),
+    );
   }
 
   @override
@@ -71,7 +65,7 @@ class _ModernProjectCardState extends State<ModernProjectCard>
           return Transform.scale(
             scale: _scaleAnimation.value,
             child: GestureDetector(
-              onTap: () => _openURL(widget.project.link),
+              onTap: _openProjectDetails,
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
@@ -191,15 +185,15 @@ class _ModernProjectCardState extends State<ModernProjectCard>
           // Project Icon
           if (widget.project.iconUrl?.isNotEmpty == true)
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.95),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(6),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
@@ -253,7 +247,7 @@ class _ModernProjectCardState extends State<ModernProjectCard>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'View Project',
+                      'View Details',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
@@ -262,7 +256,7 @@ class _ModernProjectCardState extends State<ModernProjectCard>
                     ),
                     SizedBox(width: 4),
                     Icon(
-                      Icons.arrow_forward_rounded,
+                      Icons.info_outline,
                       color: Colors.white,
                       size: 16,
                     ),
@@ -280,22 +274,22 @@ class _ModernProjectCardState extends State<ModernProjectCard>
       if (widget.project.iconUrl.startsWith('http')) {
         return CachedNetworkImage(
           imageUrl: widget.project.iconUrl,
-          height: 32,
-          width: 32,
+          height: 16,
+          width: 16,
           errorWidget: (context, url, error) => const Icon(
             Icons.web_asset,
-            size: 32,
+            size: 16,
             color: primaryColor,
           ),
         );
       } else {
         return Image.asset(
           widget.project.iconUrl,
-          height: 32,
-          width: 32,
+          height: 16,
+          width: 16,
           errorBuilder: (context, error, stackTrace) => const Icon(
             Icons.web_asset,
-            size: 32,
+            size: 16,
             color: primaryColor,
           ),
         );
@@ -303,7 +297,7 @@ class _ModernProjectCardState extends State<ModernProjectCard>
     }
     return const Icon(
       Icons.web_asset,
-      size: 32,
+      size: 16,
       color: primaryColor,
     );
   }

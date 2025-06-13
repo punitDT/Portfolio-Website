@@ -46,7 +46,8 @@ class ServiceMobile extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 10.w),
           child: CustomSectionSubHeading(
             text: dataProvider.getContent('services_sub_heading',
-              defaultValue: "Since the beginning of my journey as a freelance designer and developer, I've worked in startups and collaborated with talented people to create digital products for both business and consumer use. I offer a wide range of services, including programming and development."),
+                defaultValue:
+                    "Since the beginning of my journey as a freelance designer and developer, I've worked in startups and collaborated with talented people to create digital products for both business and consumer use. I offer a wide range of services, including programming and development."),
           ),
         ),
         Space.y(5.w)!,
@@ -63,24 +64,30 @@ class ServiceMobile extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 2.w),
             clipBehavior: Clip.none, // Prevent clipping of content
             child: CarouselSlider.builder(
-              key: const ValueKey('services_carousel'), // Unique key for carousel
+              key: const ValueKey(
+                  'services_carousel'), // Unique key for carousel
               itemCount: services.length,
-              itemBuilder: (BuildContext context, int itemIndex, int i) => Container(
-                key: ValueKey('service_card_${services[i].id ?? services[i].name}_$i'), // Unique key for each card
+              itemBuilder: (BuildContext context, int itemIndex, int i) =>
+                  Container(
+                key: ValueKey(
+                    'service_card_${services[i].id ?? services[i].name}_$i'), // Unique key for each card
                 margin: EdgeInsets.symmetric(horizontal: 1.w),
                 clipBehavior: Clip.none, // Prevent clipping of card content
                 child: _FirestoreServiceCard(
-                  key: ValueKey('service_${services[i].id ?? services[i].name}'), // Unique key for service card
+                  key: ValueKey(
+                      'service_${services[i].id ?? services[i].name}'), // Unique key for service card
                   service: services[i],
                 ),
               ),
               options: CarouselOptions(
+                clipBehavior: Clip.none,
                 viewportFraction: 0.85, // Slightly reduced to prevent overflow
                 height: 400, // Increased height for mobile content
                 autoPlay: true,
                 autoPlayInterval: const Duration(seconds: 5),
                 enlargeCenterPage: true,
-                enlargeFactor: 0.2, // Reduced enlarge factor to prevent overflow
+                enlargeFactor:
+                    0.2, // Reduced enlarge factor to prevent overflow
                 autoPlayCurve: Curves.fastOutSlowIn,
                 autoPlayAnimationDuration: const Duration(milliseconds: 800),
                 enableInfiniteScroll: false,
